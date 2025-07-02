@@ -14,4 +14,7 @@ export class User {
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastSeen: Date;
 }

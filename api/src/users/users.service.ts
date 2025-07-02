@@ -35,4 +35,8 @@ export class UsersService {
     }
     return user;
   }
+
+  async updateLastSeen(userId: string): Promise<void> {
+    await this.usersRepository.update(userId, { lastSeen: new Date() });
+  }
 }
