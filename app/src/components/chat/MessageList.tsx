@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { messageService, Message } from "../../services/messageService";
+import { io } from "socket.io-client";
 
 const MessageList: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -11,6 +12,16 @@ const MessageList: React.FC = () => {
   } = useQuery<Message[]>({
     queryKey: ["messages"],
     queryFn: () => messageService.findAll(),
+  });
+
+  const queryClient = useQueryClient();
+
+  const socket = io("http://localhost:8000");
+
+  socket.on("newClickFromServer", () => {
+    console.log("on rentre ici");
+
+    queryClient.invalidateQueries({ queryKey: ["messages"] });
   });
 
   const scrollToBottom = () => {

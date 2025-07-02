@@ -6,11 +6,17 @@ import {
   CreateMessageDto,
 } from "../../services/messageService";
 import { SendHorizontal } from "lucide-react";
+import { io } from "socket.io-client";
 
 const MessageForm: React.FC = () => {
   const { register, handleSubmit, reset, watch } = useForm<CreateMessageDto>();
   const queryClient = useQueryClient();
   const messageText = watch("text", "");
+
+  const socket = io("http://localhost:8000", {});
+  socket.on("connect", () => {
+    console.log("connected");
+  });
 
   const allowToSend = messageText.trim() !== "";
 
@@ -23,7 +29,14 @@ const MessageForm: React.FC = () => {
   });
 
   const onSubmit = (data: CreateMessageDto) => {
+    console.log("On passe bien ici");
+
+    handleClick();
     mutation.mutate(data);
+  };
+
+  const handleClick = () => {
+    socket.emit("newClickFromClient", "One client click to the button");
   };
 
   return (
